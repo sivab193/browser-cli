@@ -9,4 +9,4 @@ from .agent import Agent, AgentState
 from .bivia import BiviaClient, BiviaError
 
 __all__ = ["Agent", "AgentState", "BiviaClient", "BiviaError"]
-__version__ = "0.1.0"
+__version__ = "0.1.1"

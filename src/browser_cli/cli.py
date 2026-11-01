@@ -20,7 +20,7 @@ from rich.table import Table
 
 from . import __version__
 from .agent import Agent
-from .bivia import BiviaClient, BiviaError
+from .bivia import BiviaClient, BiviaError, api_key_source
 from .bootstrap import browsers_path, install_chromium
 from .browser import Browser
 from .text_helper import TextHelper
@@ -156,7 +156,8 @@ def doctor() -> None:
     # Bivia key
     try:
         BiviaClient()
-        console.print("[green]OK[/] Bivia API key found (A8_API_KEY).")
+        source = api_key_source() or "unknown"
+        console.print(f"[green]OK[/] Bivia API key found ({source}).")
     except BiviaError as exc:
         ok = False
         console.print(f"[red]FAIL[/] {exc}")

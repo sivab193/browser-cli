@@ -1,6 +1,6 @@
 [project]
 name = "bivia-browser-cli"
-version = "0.1.0"
+version = "0.1.1"
 description = "A fast web-browsing agent CLI driven by the Bivia decision model. Any LLM or coding agent can call it."
 readme = "README.md"
 requires-python = ">=3.10"

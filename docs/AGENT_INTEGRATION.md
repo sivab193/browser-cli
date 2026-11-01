@@ -95,12 +95,17 @@ else:
 
 | variable | required | purpose |
 |----------|----------|---------|
-| `A8_API_KEY` | yes | Bivia decision API key |
+| `A8_API_KEY` | see note | Bivia decision API key |
+| `BIVIA_API_KEY` | see note | Bivia key (Bivia CLI convention) |
 | `A8_BASE_URL` | no | override the Bivia base URL |
 | `TEXT_MODEL_API_KEY` | no | enable a text model for `TYPE_TEXT` |
 | `TEXT_MODEL` | no | model id (default `openai/gpt-4o-mini`) |
 | `TEXT_MODEL_BASE_URL` | no | OpenAI-compatible endpoint |
 | `PLAYWRIGHT_BROWSERS_PATH` | no | shared Chromium location (set automatically otherwise) |
+
+The Bivia key is resolved in this order: `--api-key` flag → `A8_API_KEY` →
+`BIVIA_API_KEY` → `~/.bivia/config` (written by the Bivia CLI). So if the Bivia
+CLI is already set up, no key env var is needed.
 
 ## Readiness
 

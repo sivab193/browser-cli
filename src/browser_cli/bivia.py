@@ -9,15 +9,53 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 import httpx
 
 DEFAULT_BASE_URL = "https://api.articul8.ai/bivia"
 
+# Shared config written by the official Bivia CLI (`bivia key` / `bivia install`).
+BIVIA_CONFIG_PATH = Path.home() / ".bivia" / "config"
+
 
 class BiviaError(RuntimeError):
     """Raised when the Bivia API returns an error or an unusable response."""
+
+
+def _read_config_value(key: str, path: Path = BIVIA_CONFIG_PATH) -> str | None:
+    """Read KEY=value from the Bivia CLI's env-style config file, if present."""
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return None
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        name, _, value = line.partition("=")
+        if name.strip() == key:
+            # Strip surrounding quotes and whitespace.
+            return value.strip().strip("'\"") or None
+    return None
+
+
+def resolve_api_key(api_key: str | None = None) -> str | None:
+    """Find the Bivia API key, in priority order.
+
+    1. Explicit argument (e.g. --api-key).
+    2. A8_API_KEY environment variable (browser-cli convention).
+    3. BIVIA_API_KEY environment variable (Bivia CLI convention).
+    4. ~/.bivia/config written by the official Bivia CLI (BIVIA_API_KEY=...).
+    """
+    if api_key:
+        return api_key
+    for env in ("A8_API_KEY", "BIVIA_API_KEY"):
+        value = os.environ.get(env)
+        if value:
+            return value
+    return _read_config_value("BIVIA_API_KEY")
 
 
 @dataclass
@@ -49,6 +87,18 @@ class Decision:
         )
 
 
+def api_key_source(api_key: str | None = None) -> str | None:
+    """Describe where the resolved key comes from, for diagnostics. None if absent."""
+    if api_key:
+        return "explicit argument"
+    for env in ("A8_API_KEY", "BIVIA_API_KEY"):
+        if os.environ.get(env):
+            return f"{env} environment variable"
+    if _read_config_value("BIVIA_API_KEY"):
+        return str(BIVIA_CONFIG_PATH)
+    return None
+
+
 class BiviaClient:
     """Synchronous Bivia client covering the decision endpoints used by the agent."""
 
@@ -59,10 +109,11 @@ class BiviaClient:
         mode: str = "fast",
         timeout: float = 30.0,
     ) -> None:
-        self.api_key = api_key or os.environ.get("A8_API_KEY")
+        self.api_key = resolve_api_key(api_key)
         if not self.api_key:
             raise BiviaError(
-                "No Bivia API key. Set A8_API_KEY in the environment or pass api_key."
+                "No Bivia API key. Set up the Bivia CLI (key saved to ~/.bivia/config), "
+                "or set A8_API_KEY / BIVIA_API_KEY, or pass api_key."
             )
         self.base_url = (base_url or os.environ.get("A8_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
         self.mode = mode

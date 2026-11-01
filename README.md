@@ -55,19 +55,32 @@ offline):
 browser-cli install
 ```
 
-Set your keys:
+## The Bivia API key
+
+If you already use the [Bivia CLI](https://docs.articul8.ai/bivia/), you're done
+— `browser-cli` reads the same key from `~/.bivia/config` automatically. No extra
+setup.
+
+Otherwise, provide the key any of these ways (highest priority first):
 
 ```bash
-export A8_API_KEY="your-bivia-key"            # required — the decision policy
+browser-cli run --api-key "your-key" ...      # 1. explicit flag
+export A8_API_KEY="your-key"                  # 2. browser-cli env var
+export BIVIA_API_KEY="your-key"               # 3. Bivia env var
+# 4. ~/.bivia/config  (BIVIA_API_KEY=...)      written by the Bivia CLI
+```
 
-# optional: a small text model for TYPE_TEXT (OpenAI-compatible endpoint)
+Optionally enable a small text model for the `TYPE_TEXT` operation
+(OpenAI-compatible endpoint):
+
+```bash
 export TEXT_MODEL_API_KEY="your-openrouter-key"
 export TEXT_MODEL="openai/gpt-4o-mini"        # any small model
 export TEXT_MODEL_BASE_URL="https://openrouter.ai/api/v1"
 ```
 
 Without a text model, `TYPE_TEXT` falls back to typing the goal text — fine for
-search boxes. Check your setup:
+search boxes. Check your setup (also reports where the key was found):
 
 ```bash
 browser-cli doctor
