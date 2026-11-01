@@ -1,0 +1,67 @@
+[project]
+name = "bivia-browser-cli"
+version = "0.1.0"
+description = "A fast web-browsing agent CLI driven by the Bivia decision model. Any LLM or coding agent can call it."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Sivaganesh Balaganesh" }]
+keywords = ["browser", "agent", "automation", "bivia", "llm", "cli", "playwright"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+]
+
+dependencies = [
+    "playwright>=1.40",
+    "httpx>=0.27",
+    "typer>=0.12",
+    "rich>=13.7",
+]
+
+[project.urls]
+Homepage = "https://github.com/sivab193/browser-cli"
+Repository = "https://github.com/sivab193/browser-cli"
+"Bivia API" = "https://docs.articul8.ai/bivia/"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5", "build>=1.2", "twine>=5.0"]
+
+[project.scripts]
+browser-cli = "browser_cli.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/browser_cli"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/browser_cli/snapshot.js" = "browser_cli/snapshot.js"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/browser_cli", "README.md", "LICENSE", "pyproject.toml"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# PYI034: false positive — our __enter__ returns self but uses a string annotation.
+ignore = ["PYI034"]
+
+[tool.ruff.lint.per-file-ignores]
+# CLI boundaries intentionally catch broad exceptions to report errors cleanly
+# instead of dumping tracebacks on the user.
+"src/browser_cli/cli.py" = ["BLE001"]
