@@ -51,7 +51,7 @@ packages = ["src/browser_cli"]
 "src/browser_cli/snapshot.js" = "browser_cli/snapshot.js"
 
 [tool.hatch.build.targets.sdist]
-include = ["src/browser_cli", "README.md", "LICENSE", "pyproject.toml"]
+include = ["src/browser_cli", "README.md", "LICENSE", "CHANGELOG.md", "CONTRIBUTING.md", "docs", "pyproject.toml"]
 
 [tool.ruff]
 line-length = 100

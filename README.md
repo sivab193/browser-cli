@@ -151,6 +151,13 @@ twine upload dist/*
 
 One upload to PyPI serves `pip`, `pipx`, `uv tool install`, and `uvx` alike.
 
+## Documentation
+
+- [docs/AGENT_INTEGRATION.md](docs/AGENT_INTEGRATION.md) — calling `browser-cli`
+  from another agent or LLM (JSON contract, exit codes, safe invocation).
+- [CHANGELOG.md](CHANGELOG.md) — release history.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — development setup and release process.
+
 ## Credits
 
 Action-space design inspired by
